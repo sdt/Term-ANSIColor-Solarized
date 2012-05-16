@@ -11,6 +11,7 @@ use Exporter ();
 BEGIN {
     @ISA         = qw( Exporter );
     @EXPORT      = qw( color );
+    @EXPORT_OK   = qw( colorvalid );
 }
 
 use Term::ANSIColor ();
@@ -38,6 +39,16 @@ sub color {
                 map { split }
                     @_;
     return Term::ANSIColor::color(@codes);
+}
+
+sub colorvalid {
+    # Strip out the color codes we know about
+    my @unknown_codes = grep { !defined $color_map{$_} }
+                        map  { split }
+                             @_;
+
+    # And pass them on to be checked
+    return Term::ANSIColor::colorvalid(@unknown_codes);
 }
 
 1;
